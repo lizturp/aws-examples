@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Cloudformation for creating a new bucket.
+Parameters:
+  BucketName:
+    Description: 'Full string for bucket name.  Example: liz-projectname-prod'
+    Type: String
+    MinLength: '1'
+    MaxLength: '70'
+    AllowedPattern: "[a-zA-Z\\-0-9]*"
+    ConstraintDescription: must contain only alpha characters and hyphens.
+  ProjectName:
+    Description: 'Example: POC project - this is for bucket tags'
+    Type: String
+    MinLength: '1'
+    MaxLength: '30'
+    AllowedPattern: "[a-zA-Z\\-0-9]*"
+    ConstraintDescription: must contain only alpha characters and hyphens.
+  Environment:
+    Description: dev, stage, or prod - this is for bucket tags
+    Type: String
+    MinLength: '3'
+    MaxLength: '5'
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Ref: BucketName
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: !Sub "s3://liz-infrastructure-prod/cloudformation/s3/includes/lifecycle/${BucketName}/lifecycle.template"
+      Tags:
+      - Key: Project
+        Value:
+          Ref: ProjectName
+      - Key: Environment
+        Value:
+          Ref: Environment
+      - Key: Owner
+        Value: liz@example.com

@@ -1,0 +1,8 @@
+Rules:
+- Id: liz-coolproject-prod/ move to glacier after 12 months + 1 month buffer, expire 2 years later
+  Status: Enabled
+  ExpirationInDays: 1126
+  Transitions:
+  - TransitionInDays: 396
+    StorageClass: GLACIER
+  NoncurrentVersionExpirationInDays: 1

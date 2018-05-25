@@ -1,0 +1,5 @@
+Rules:
+- Id: liz-sagemaker-output-dev files expire after 90 days
+  Status: Enabled
+  ExpirationInDays: 90
+  NoncurrentVersionExpirationInDays: 1

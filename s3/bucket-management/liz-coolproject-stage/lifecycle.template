@@ -1,0 +1,8 @@
+Rules:
+- Id: liz-coolproject-stage/ move to glacier after 90 days + 7 day buffer, expire 1 years later
+  Status: Enabled
+  ExpirationInDays: 462
+  Transitions:
+  - TransitionInDays: 97
+    StorageClass: GLACIER
+  NoncurrentVersionExpirationInDays: 1
