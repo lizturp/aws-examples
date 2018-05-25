@@ -1,4 +1,4 @@
-** Bucket Policy vs. IAM Policy **
+### Bucket Policy vs. IAM Policy
 
 2 good articles that cover the basics:
 
@@ -6,7 +6,7 @@ https://aws.amazon.com/blogs/security/iam-policies-and-bucket-policies-and-acls-
 https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-managing-access-s3-resources.html
 
 
-** Cloudformation Template - S3 Bucket **
+### Cloudformation Template - S3 Bucket
 
 How to use the S3 bucket CF template
 
@@ -27,10 +27,10 @@ additional step for buckets that *require cross account access* - Skip to Step 5
 	a. Build with Parameters (bucketname and Env.)
 
 
-# FROM JENKINS 
-cd s3/bucket-management/${BUCKETNAME}
+### FROM JENKINS 
+```cd s3/bucket-management/${BUCKETNAME}
 aws s3 cp lifecycle.template s3://liz-infrastructure-prod/cloudformation/s3/includes/lifecycle/${BUCKETNAME}/lifecycle.template --sse
 source project.properties
 cd ../
 aws cloudformation validate-template --template-body file://s3-bucket.template
-aws cloudformation deploy --stack-name s3-${ENV}-${BUCKETNAME} --template-file s3-bucket.template --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ProjectName=${PROJECTNAME} Environment=${ENV} BucketName=${BUCKETNAME}
+aws cloudformation deploy --stack-name s3-${ENV}-${BUCKETNAME} --template-file s3-bucket.template --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ProjectName=${PROJECTNAME} Environment=${ENV} BucketName=${BUCKETNAME}```
