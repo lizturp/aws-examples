@@ -13,7 +13,7 @@
       "KinesisStream": {
       "Type" : "AWS::Kinesis::Stream",
       "Properties" : {
-        "Name" : {"Fn::Join" : [ "", [ "dds-", {"Ref": "Environment"} ] ]},
+        "Name" : {"Fn::Join" : [ "", [ "liz-coolproject-", {"Ref": "Environment"} ] ]},
         "RetentionPeriodHours" : 24,
         "ShardCount" : 2,
         "Tags" : [
