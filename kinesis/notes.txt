@@ -1,0 +1,87 @@
+Notes on Kinesis and Cloudformation:
+
+Kinesis Stream - independent piece of infrastructure - "backbone"
+Example - we might add other streaming sources to put records into this stream
+
+Kinesis Firehose - independent piece of infrastructure - "backbone"
+
+In this situation, it is configured to:
+1. Uses a Kinesis Stream as Source
+2. Uses S3 as Destination
+
+These backbone pieces are completely seperate from the Lambda functions - do not need shared roles, policies, or deployments.
+
+
+Notes on CF - Configuring #1 - Kinesis Stream as a Source:
+
+1. KinesisStreamSourceConfiguration
+When a Kinesis stream is used as the source for the delivery stream, a Kinesis Data Firehose DeliveryStream KinesisStreamSourceConfiguration containing the Kinesis stream ARN and the role ARN for the source stream.
+
+Required: No
+
+Type: Kinesis Data Firehose DeliveryStream KinesisStreamSourceConfiguration
+
+Update requires: No interruption
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-kinesisstreamsourceconfiguration.html
+
+2. S3DestinationConfiguration
+An Amazon S3 destination for the delivery stream.
+
+Required: Conditional. You must specify only one destination configuration.
+
+Type: Kinesis Firehose DeliveryStream S3DestinationConfiguration
+
+Update requires: No interruption. If you change the delivery stream destination from an Amazon S3 destination to an Amazon ES destination, update requires some interruptions.
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-kinesisfirehose-deliverystream-s3destinationconfiguration.html
+
+
+Firehose CF Setting:
+Compression
+GZIP compression keeps it compatible in case we ever want to send to redshfift
+
+IAM role
+https://docs.aws.amazon.com/firehose/latest/dev/controlling-access.html#using-iam-s3
+
+You can choose to create a new role where required permissions are assigned automatically, or choose an existing role created for Kinesis Data Firehose. 
+*The role is used to grant Kinesis Data Firehose access to your S3 bucket, AWS KMS key (if data encryption is enabled), and Lambda function (if data transformation is enabled).* 
+The console might create a role with placeholders. You can safely ignore or safely delete lines with %FIREHOSE_BUCKET_NAME%, %FIREHOSE_DEFAULT_FUNCTION%, or %FIREHOSE_DEFAULT_VERSION%. 
+For more information, see Grant Kinesis Data Firehose Access to an Amazon S3 Destination.
+
+
+The KinesisStreamSourceConfiguration property type specifies the stream and role Amazon Resource Names (ARNs) for a Kinesis stream used as the source for a delivery stream.
+
+KinesisStreamSourceConfiguration is a property of the AWS::KinesisFirehose::DeliveryStream resource.
+
+Properties
+KinesisStreamARN
+The Amazon Resource Name (ARN) of the source Kinesis stream.
+
+Required: Yes
+
+Type: String
+
+Update requires: No interruption
+
+
+*********************************************************************************************
+RoleARN
+The Amazon Resource Name (ARN) of the role that provides access to the source Kinesis stream.
+*********************************************************************************************
+
+Required: Yes
+
+Type: String
+
+Update requires: No interruption
+
+
+Resources:
+Kinesis Stream Create:
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesis-stream.html
+
+Firehose:
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kinesisfirehose-deliverystream.html
+
+https://forums.aws.amazon.com/thread.jspa?messageID=802822&tstart=0
