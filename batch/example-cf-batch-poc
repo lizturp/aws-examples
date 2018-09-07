@@ -1,0 +1,59 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for a Batch Environment",
+    "Parameters": {
+      "Environment": {
+          "Description": "dev, stage, or prod - for tagging and naming resource.",
+          "Type": "String"
+      },
+      "KeyName": {
+        "Description" : "Name of an existing EC2 KeyPair",
+        "Type": "AWS::EC2::KeyPair::KeyName",
+        "ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
+      },
+      "DevName" : {
+        "Description" : "Developer who is launching this - email prefferred.  For tagging purposes.",
+        "Type" : "String"
+      },
+      "ProjectName" : {
+        "Description" : "What project are you working on?  For tagging purposes.",
+        "Type" : "String"
+      }
+   },
+   "Resources": {
+      "MyComputeEnv": {
+        "Type": "AWS::Batch::ComputeEnvironment",
+        "Properties": {
+          "Type": "MANAGED",
+          "ServiceRole": "arn:aws:iam::0123456789:role/service-role/AWSBatchServiceRole",
+          "ComputeEnvironmentName": {"Fn::Join": [ "", [ "dev-", { "Ref": "ProjectName" } ] ]},
+          "ComputeResources": {
+            "MinvCpus": "4",
+            "MaxvCpus": "256",
+            "DesiredvCpus": "4",
+            "SecurityGroupIds": [
+              "sg-1234567"
+            ],
+            "Type": "EC2",
+            "Subnets": [
+              "subnet-12345678"
+            ],
+            "InstanceRole": "arn:aws:iam::0123456789:role/ecsInstanceRole",
+            "InstanceTypes": [
+              "optimal"
+            ],
+            "Ec2KeyPair": { "Ref" : "KeyName" },
+            "Tags": {
+              "Name": "batch-compute-environment-dev",
+              "SN Owner": { "Ref": "DevName" },
+              "Project": {"Ref": "ProjectName"},
+              "SN Environment": "dev",
+              "Automation": "CF Dev Utility",
+              "SN Platform": "Data Services Platform"
+            }
+          },
+          "State": "ENABLED"
+        }
+      }
+    }
+}
