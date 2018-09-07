@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Cloudformation for creating a basic SQS Queue.
+Parameters:
+  QueueName:
+    Description: 'Full string for queue.  Example: scalyr-s3-coolproject'
+    Type: String
+    MinLength: '1'
+    MaxLength: '70'
+    AllowedPattern: "[a-zA-Z\\-0-9]*"
+    ConstraintDescription: must contain only alpha characters and hyphens.
+Resources: 
+  MyQueue: 
+    Type: AWS::SQS::Queue
+    Properties: 
+      QueueName:
+         Ref: QueueName
+  MyQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties: 
+      PolicyDocument:
+        Fn::Transform:
+            Name: AWS::Include
+            Parameters:
+              Location: !Sub "s3://liz-infrastructure-prod/cloudformation/sqs/includes/queue-policy/${QueueName}/queue-policy.template"
+      Queues:
+        - Ref: QueueName
+Outputs: 
+  QueueURL: 
+    Description: "URL of newly created SQS Queue"
+    Value: 
+      Ref: "MyQueue"
+  QueueARN: 
+    Description: "ARN of newly created SQS Queue"
+    Value: 
+      Fn::GetAtt: 
+        - "MyQueue"
+        - "Arn"
+  QueueName: 
+    Description: "Name newly created SQS Queue"
+    Value: 
+      Fn::GetAtt: 
+        - "MyQueue"
+        - "QueueName"
